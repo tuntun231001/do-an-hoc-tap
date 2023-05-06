@@ -1,0 +1,569 @@
+﻿@using TECH.Areas.Admin.Models
+@model ProductModelView
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@{
+    var userString = Context.Session.GetString("UserInfor");
+    var user = new UserModelView();
+    if (userString != null)
+    {
+        user = JsonConvert.DeserializeObject<UserModelView>(userString);
+    }
+}
+@{
+    ViewData["Title"] = "ProductCategory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    decimal soluong = 0;
+    if (Model.quantity.HasValue && Model.quantity.Value > 0
+        && Model.quantitysell.HasValue && Model.quantitysell.Value > 0)
+    {
+        soluong = Model.quantity.Value - Model.quantitysell.Value;
+    }else if(Model.quantity.HasValue && Model.quantity.Value > 0){
+        soluong = Model.quantity.Value;
+    }
+}
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        h2 {
+            font-size: 14px;
+        }
+
+        .tt-prod {
+            color: #212529;
+            text-transform: uppercase;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .min-wrap h2 {
+            padding: 10px 0;
+            color: #f8456a;
+            font-weight: bold;
+        }
+
+        h2.price-prod2 {
+            font-size: 16px;
+            color: #999 !important;
+            margin: 0;
+        }
+
+        .price-prod {
+            color: #f00;
+            font-size: 25px;
+            margin: 4px 0px;
+        }
+
+
+        .product-detail .tt-prod {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .product-detail .price-prod {
+            padding: 0px 0px;
+            color: #f8456a;
+            font-weight: bold;
+        }
+
+        .product-detail .price-prod2 {
+            font-weight: bold;
+            padding-bottom: 0px;
+            padding-top: 3px;
+        }
+
+        .btn-add-cart {
+            background: #cb1c22;
+            padding: 6px 0px !important;
+            color: #fff;
+        }
+        .btn-add-cart:hover{
+            background: #ae1427;
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #8fa815;
+        }
+
+        /*.product-detail h2 {
+            padding: 10px 0;
+            color: #f8456a;
+            font-weight: bold;
+        }*/
+
+        .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus, .nav-tabs > li.active > a:hover {
+            color: #fff;
+            cursor: default;
+            background-color: #8fa815;
+            border: 1px solid #ddd;
+            border-bottom-color: transparent;
+            padding: 10px;
+            /* height: 40px; */
+            display: inline-block;
+        }
+
+        .nav-tabs > li {
+            margin-bottom: 0px;
+        }
+
+       /* .product-content {
+            border: 1px solid #ddd;
+        }*/
+
+        /*.product-content-left {
+            border-right: 1px solid #ddd;
+            padding: 20px;
+        }*/
+
+        .mota {
+            margin-top: 40px;
+        }
+
+        .tab-content {
+            padding: 20px;
+        }
+
+        .sub_desc {
+            margin-top: 20px;
+               background: #f8f9fa;
+                border: 1px solid;
+                border-color: #e9ecef #e9ecef transparent #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+         /*   -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            -o-border-radius: 5px;
+            -moz-box-shadow: inset 1px 1px 1px #fff;
+            -webkit-box-shadow: inset 1px 1px 1px #fff;
+            box-shadow: inset 1px 1px 1px #fff;
+            -o-box-shadow: inset 1px 1px 1px #fff;
+            color: #189001;*/
+            margin-bottom: 19px;
+        }
+
+            .sub_desc p {
+                margin: 0;
+                padding: 5px 0px;
+            }
+
+                .sub_desc p a {
+                    background: #48bb78;
+                    padding: 2px 6px;
+                    border-radius: 3px;
+                    color: #fff !important;
+                }
+
+        .txt-title, .txt-title-danh-muc {
+            margin: 11px 0px;
+        }
+
+        .danh-muc-name {
+            color: #0071c5;
+            font-weight: bold;
+        }
+
+        .box-quantity {
+            margin: 5px 0px;
+            display: inline-flex;
+        }
+
+        .bg-primary {
+            background-color: #8fa815 !important;
+        }
+
+        .modal-title {
+            color: #fff !important;
+            font-size: 20px;
+        }
+
+        .choosesize {
+            background: #f4f4f4;
+            padding: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .choosesize, ul.ulsize li {
+        border: 1px solid #dadada;
+    }
+
+            .choosesize li {
+        list-style: none;
+    }
+
+            .choosesize p {
+                font-weight: 400;
+                text-transform: uppercase;
+                margin: 0;
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+
+            ul.ulsize li:hover {
+                border-color: red;
+            }
+
+        ul.ulsize li {
+            float: left;
+            margin-right: 5px;
+            text-align: center;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        ul.ulsize li.tick {
+        border-color: red;
+    }
+        .st-pd-table td:first-child {
+            width: 126px;
+        }
+            .st-pd-table td {
+            border: 1px solid #dee2e6;
+            padding: 6px 10px;
+        }
+        .st-pd-table tr:nth-child(odd) {
+        background-color: #f3f4f7;
+    }
+    .breadcum{
+        margin: 0px !important;
+        padding: 16px 0px 30px 0px;
+    }
+    .content-head{
+                box-shadow: 0 0 3px 0 #dee2e6;
+            padding-bottom: 20px;
+    }
+    .product-content-bottom{
+            background: #f8f9fa;
+            padding: 32px 0px;
+    }
+    footer{
+            margin-top: 0px !important;
+    }
+    .product-content-bottom h2{
+            font-size: 23px;
+            color: #30456e;
+            text-align: center;
+            font-weight: bold;
+
+    }
+    
+</style>
+<input type="hidden" class="product-id" value="@Model.id" />
+<div class="product-detail custom-height">
+    <section class="ftco-section">
+        <div class="content-head">
+            <div class="container">
+                <div class="breadcum">
+                    <ul>
+                        <li><a title="trang chủ" href="/">Trang chủ</a></li>/<li><a title="trang chủ" href="javascript:void(0)">@Model.name</a></li>
+                    </ul>
+                </div>
+                <div class="product-content">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="product-content-left">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="m-i2-cpd box-uof-img">
+                                            <img style="width: 100%; height: 466px;" src="/product-image/@Model.images" class=" ls-is-cached lazyloaded" />
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="hidden" value="@(Model.price_sell.HasValue && Model.price_sell.Value > 0 ? Model.price_sell.Value:0)" class="product-price" />
+                                        <div class="b-s-1 bg-shadow">
+                                            <h4 class="tt-prod NoneMB">@Model.name</h4>
+                                            <h2 class="price-prod NoneMB">
+                                                @{
+                                                    string priceStr = "";
+                                                    string price_reducedstr = "";
+                                                    if (Model.price_sell.HasValue && Model.price_sell.Value > 0)
+                                                    {
+                                                        priceStr = Model.price_sell.Value.ToString("#,###");
+                                                    }
+                                                    if (Model.price_reduced.HasValue && Model.price_reduced.Value > 0)
+                                                    {
+                                                        price_reducedstr = Model.price_reduced.Value.ToString("#,###");
+                                                    }
+
+                                                }
+                                                @priceStr đ
+                                            </h2>
+                                            @if (!string.IsNullOrEmpty(price_reducedstr))
+                                            {
+                                                <h2 class="price-prod2 NoneMB"><strike>@price_reducedstr đ</strike></h2>
+                                            }
+
+                                            <p class="txt-title-danh-muc">
+                                                <span class="danh-muc-lable">Danh mục: </span>
+                                                <span class="danh-muc-name"> @Model.categorystr</span>
+                                            </p>
+                                            @if (!string.IsNullOrEmpty(Model.colorStr))
+                                            {
+                                                <p class="txt-title-danh-muc">
+                                                    <span class="danh-muc-lable">Màu sắc: </span>
+                                                    <span class="danh-muc-name txt-color"> @Model.colorStr</span>
+                                                </p>
+                                            }
+                                            @if (soluong > 0)
+                                            {
+                                                <p class="txt-title-danh-muc">
+                                                    <span class="danh-muc-lable">Tình trạng: </span>
+                                                    <span class="danh-muc-name txt-color"> Còn Hàng</span>
+                                                </p>
+                                            }
+                                            else{
+                                                    <p class="txt-title-danh-muc">
+                                                        <span class="danh-muc-lable">Tình trạng: </span>
+                                                        <span class="danh-muc-name txt-color"> Hết Hàng</span>
+                                                    </p>
+                                            }
+                                            @*<p class="txt-title-danh-muc">
+                                            <span class="danh-muc-lable">Thương hiệu: </span>
+                                            </p>*@
+                                            @*@if (Model.SizesModelView != null && Model.SizesModelView.Count > 0)
+                                            {
+                                            int step = 0;
+                                            <div class="choosesize ">
+                                            <p>Chọn size: </p>
+                                            <ul class="ulsize">
+                                            @foreach (var itemSize in Model.SizesModelView)
+                                            {
+                                            if(step == 0){
+                                            <li onclick="AddSize(@itemSize.id,this)" class="sizes tick" data-size="@itemSize.id">@itemSize.name</li>
+                                            }else{
+                                            <li onclick="AddSize(@itemSize.id,this)" class="sizes" data-size="@itemSize.id">@itemSize.name</li>
+                                            }
+                                            step++;
+                                            }
+                                            </ul>
+                                            </div>
+                                            }*@
+
+                                            @if (soluong > 0)
+                                            {
+                                                <div class="input-group box-quantity">
+                                                <span class="input-group-btn mr-2" style="margin: 0px !important;">
+                                                    <button type="button" data-type="minus" data-field="" class="quantity-left-minus minus btn" style="border: 1px solid #ddd; border-right: none; border-radius: unset;">
+                                                        <i class="ion-ios-remove">-</i>
+                                                    </button>
+                                                </span>
+                                                        <input type="number" min="1" value="1" id="quantity" max="@soluong" class="form-control input-number" oninput="this.value = !!this.value && Math.abs(this.value) >= 1 && Math.abs(this.value) <= @soluong ? Math.abs(this.value) : 1" style="padding: 0px 10px; flex: unset;min-width: 100px;">
+                                                <span class="input-group-btn ml-2" style="margin: 0px !important;">
+                                                    <button type="button" data-type="plus" class="quantity-right-plus btn plus" style="border: 1px solid #ddd; border-left: none; border-radius: unset;">
+                                                        <i class="ion-ios-add">+</i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                            }
+                                            
+
+                                            <div class="sub_desc">
+                                                <p>
+                                                    <a>1.</a>&nbsp;Tặng miễn phí banner, thiệp (trị giá 20.000đ)
+                                                </p>
+                                                <p>
+                                                    <a>2.</a><span>&nbsp;Giao hàng trên toàn quốc</span>
+                                                </p>
+                                                <p>
+                                                    <a>3.</a>&nbsp;Giao gấp trong 2h
+                                                </p>
+                                                <p>
+                                                    <a>4.</a>&nbsp;Cam kết hàng chất lượng
+                                                </p>
+
+                                            </div>
+                                             @if (soluong > 0){
+                                                @if(user != null)
+                                                {
+                                                    @if (user.role != 0)
+                                                    {
+                                                        <a href="javascript:void(0)" class="btn btn-black py-3 px-5 btn-block btn-add-cart" style="color: #fff;font-weight: bold;">
+                                                            MUA NGAY <i class="ion-ios-add ml-1"></i>
+                                                        </a>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <a href="javascript:void(0)" class="btn btn-black py-3 px-5 btn-block btn-add-cart" style="color: #fff;font-weight: bold;">
+                                                        MUA NGAY <i class="ion-ios-add ml-1"></i>
+                                                    </a>
+                                                }
+
+                                             }else{
+                                                      @*   <a href="javascript:void(0)" class="btn btn-black py-3 px-5 btn-block" style="color: #fff;font-weight: bold;background: #cb1c22;padding: 6px 0px !important;">
+                                                        MUA NGAY <i class="ion-ios-add ml-1"></i>
+                                                </a>*@
+                                             }
+                                            
+
+                                            @*<h4 class="gt-tt">Gọi điện thoại đặt mua: <span>0936 65 27 27 - 0977 301 303</span></h4>
+                                            <div class="tt-2prod">
+                                            <ul>
+                                            <li>Giao hàng trên toàn quốc</li>
+                                            <li>Giao nhanh <strong>sau 2h đặt hàng</strong></li>
+                                            </ul>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product-content-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="card re-card st-card st-card--article js--st-card--article" style="padding: 20px;">
+                            @Html.Raw(Model.description)
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card re-card st-card">
+                            <h2 class="card-title" style="padding: 20px 20px 0px 20px; margin-bottom: 0px; font-size: 20px; font-weight: bold;">Thông số kỹ thuật</h2>
+                            <div class="card-body" style="padding: 20px;">
+                                @Html.Raw(Model.specifications)
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+<div id="categoryModal" tabindex="-1" role="dialog" aria-labelledby="categoryModalTitle" class="modal fade" aria-modal="true">
+    <div role="document" class="modal-dialog modal-dialog-centered">
+        <form id="form-submit" action="#" style="width: 100%;">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 id="titleModal" class="modal-title white ">Vui lòng đăng nhập</h5>
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <a href="/dang-nhap" class="btn btn-primary me-1 mb-1 btn-submit-format btn-success">Đăng nhập</a>
+                    <a href="#" class="btn btn-primary me-1 mb-1 btn-submit-format" data-dismiss="modal">Hủy</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="categoryModalOverStock" tabindex="-1" role="dialog" aria-labelledby="categoryModalTitle" class="modal fade" aria-modal="true">
+    <div role="document" class="modal-dialog modal-dialog-centered">
+        <form id="form-submit" action="#" style="width: 100%;">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 id="titleModal" class="modal-title white ">Số lượng mua vượt quá số lượng trong kho </h5>
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tổng số lượng còn lại trong kho là: <span class="soluongcong"></span></p>
+                </div>
+                <div class="modal-footer">
+                    @*<a href="/dang-nhap" class="btn btn-primary me-1 mb-1 btn-submit-format btn-success" style="border: none;color: #fff;">Đăng nhập</a>*@
+                    <a href="#" class="btn btn-primary me-1 mb-1 btn-submit-format" data-dismiss="modal" style="background: #ddd; border: none;color: black;">OK</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="CartsModal" tabindex="-1" role="dialog" aria-labelledby="categoryModalTitle" class="modal fade" aria-modal="true">
+    <div role="document" class="modal-dialog modal-dialog-centered">
+        <form id="form-submit" action="#">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 id="titleModal" class="modal-title white ">Bạn đã thêm vào giỏ hàng thành công</h5>
+                    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">×</span></button>
+                </div>
+                @*  <div class="modal-body">
+                </div>*@
+                <div class="modal-footer">
+                    <a href="javascript:void(0)" class="btn btn-primary me-1 mb-1 btn-submit-format" onclick="closeStock()" style="background: green;color: #fff;">OK</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $(".plus").click(function () {
+                var value = parseInt($("#quantity").val());
+                if (value < 9999 && value >= 1) {
+                    $("#quantity").val(value + 1);
+                }
+
+            })
+            $(".minus").click(function () {
+                var value = parseInt($("#quantity").val());
+                if (value > 1) {
+                    $("#quantity").val(value - 1);
+                }
+
+            })
+            $(".btn-add-cart").click(function () {
+                var price = parseInt($("#quantity").val()) * parseInt($(".product-price").val());
+                $.ajax({
+                    url: '/Carts/Add',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        product_id: $(".product-id").val(),
+                        quantity: $("#quantity").val(),
+                        price: price,
+                        color: $(".txt-color").text()
+                        //sizeId: parseInt($(".sizes.tick").attr('data-size'))
+                    },
+                    beforeSend: function () {
+                    },
+                    complete: function () {
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $("#CartsModal").modal("show");
+                        }
+                            else if (response.overstock && response.overstock > 0) {
+                            $("#categoryModalOverStock").modal("show");
+                            $(".soluongcong").text(response.overstock);
+                        }
+                        else {
+                            $("#categoryModal").modal("show");
+                        }
+                    }
+                })
+
+            })
+
+         
+
+        })
+        function AddSize(id, tag) {
+            $(".sizes").removeClass("tick");
+            $(tag).addClass("tick");
+        }
+            function closeStock(){
+                                  $("#CartsModal").modal("hide");
+                              window.location.reload();
+                    }
+
+    </script>
+}

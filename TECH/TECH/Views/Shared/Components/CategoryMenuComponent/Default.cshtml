@@ -1,0 +1,44 @@
+﻿@using TECH.Areas.Admin.Models
+@model List<CategoryModelView>
+@*@if (Model != null && Model.Count > 0)
+{
+    <ul class="ul-nmn">
+        @foreach (var item in Model)
+        {
+            <li>
+
+                <a href="/san-pham/@item.id" style="color:black;font-weight:bold">
+                    @if (!string.IsNullOrEmpty(item.icon))
+                    {
+                        <img loading="lazy" class="icon-mn" src="/category-image/@item.icon" alt="@item.name" style="width: 50px;height:50px">
+                    }
+                    else
+                    {
+                        <img loading="lazy" class="icon-mn" src="/category-image/hoa-khai-truong500.png" alt="@item.name" style="width: 50px;height:50px">
+                    }                    
+                    <br>
+                    @item.name
+                </a>
+            </li>
+        }
+
+    </ul>
+
+}*@
+@if (Model != null && Model.Count > 0)
+{
+    <ul>
+        @foreach (var item in Model)
+        {
+            <li>
+                <a href="/san-pham?categoryId=@item.id" style="color:black;font-weight:bold" class="@item.id.ToString()">@item.name </a>
+            </li>
+        }
+    </ul>
+
+         
+
+}
+
+
+
